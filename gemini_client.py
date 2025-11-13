@@ -12,63 +12,47 @@ def generate_explanation(code, dtc_info, freeze_frame):
       - Freeze-frame sensor data
     """
     prompt = f"""
-    You are a professional automotive diagnostic writer.
+    You are a professional automotive diagnostic assistant.
 
-    Generate a short, blog-style explanation of this fault code as clean HTML.
+    Fault Code: {code}
+    Description: {dtc_info['tcode']}
+    Sections: {dtc_info.get('sections')}
 
-    STRICT FORMAT & STYLE RULES (VERY IMPORTANT):
-    - Output MUST be ONLY HTML tags, with NO surrounding ``` blocks, NO plain text, and NO markdown.
-    - Do NOT include <!DOCTYPE>, <html>, <head>, <body>, <style>, or <div> tags.
-    - Use ONLY these tags: <h1>, <h2>, <p>, <strong>, <em>, <ol>, <ul>, <li>, <br>.
-    - Every line of content MUST be inside one of those tags (no bare text).
-    - Do NOT use **bold** markdown or \\n for newlines. Use <strong> for emphasis and proper block tags for structure.
-    - Keep the response under 300 words.
+    Freeze Frame Sensor Data:
+    {freeze_frame}
 
-    FAULT CONTEXT:
-    - Fault Code: {code}
-    - Description: {dtc_info['tcode']}
-    - Sections (technical info, causes, fixes, etc.): {dtc_info.get('sections')}
-    - Freeze Frame Sensor Data: {freeze_frame}
-
-    WRITING TASK:
-    1. Briefly explain what the ECU detected.
-    2. Briefly interpret the freeze-frame data in context (only the key signals that matter).
-    3. Briefly state the most likely root cause.
-    4. Give clear, step-by-step troubleshooting / fix instructions.
-    5. Finish with a simple explanation for a normal car owner.
-
-    HTML STRUCTURE YOU MUST FOLLOW (IN THIS ORDER):
-
-    1) Title and basic info:
-    - One <h1> like: "Diagnosing {code}: {dtc_info['tcode']}"
-    - One <p><strong>Fault Code: ...</strong></p>
-    - One <p><strong>Description: ...</strong></p>
-
-    2) ECU detection + freeze-frame interpretation:
-    - <h2>ECU Detection Summary</h2>
-    - One or two <p> elements for what the ECU detected. (Task 1)
-    - <h2>Freeze-Frame Data Interpretation</h2>
-    - One or two <p> elements that interpret key freeze-frame values. (Task 2)
-
-    3) Symptoms + likely cause:
-    - <h2>Symptoms and Likely Cause</h2>
-    - One <p> describing typical symptoms in 1–2 sentences.
-    - One <p> explaining the most likely root cause. (Task 3)
-
-    4) Troubleshooting steps:
-    - <h2>Step-by-Step Troubleshooting and Fix</h2>
-    - One <ol> with 4–7 <li> steps, each starting with a short <strong>label</strong> and then a brief explanation. (Task 4)
-
-    5) Simple owner-facing summary:
-    - <h2>Simple Explanation for Car Owners</h2>
-    - One <p> that explains the issue in simple, non-technical language. (Task 5)
-
-    REMEMBER:
-    - Do NOT include any tags other than the ones listed.
-    - Do NOT escape the HTML; write real tags like <h1> and <p>, not &lt;h1&gt;.
-    - Do NOT include any extra commentary or explanation outside of the HTML.
+    TASK:
+    1. Explain what the ECU detected.
+    2. Interpret freeze-frame data in context.
+    3. Provide the most likely root cause.
+    4. Give clear, step-by-step troubleshooting instructions.
+    5. Explain in simple terms for a normal car owner.
     """
-    
+    prompt = f"""
+    You are a professional automotive diagnostic assistant. Give me a response in a blog style with correct headers, etc. Do not respond as if you are responding in a conversation. Response should be a maximum of 300 words. Response should be in HTML format without <div>. Must consist only tags like <h1>, <p>, <h2>, <ol>, <li>, etc. Should use tags for everything instead of '**', '\n', etc. Should be able to run in a single html file.
+
+    Fault Code: {code}
+    Description: {dtc_info['tcode']}
+    Sections: {dtc_info.get('sections')}
+
+    Freeze Frame Sensor Data:
+    {freeze_frame}
+
+    TASK:
+    1. Briefly explain what the ECU detected.
+    2. Briefly Interpret freeze-frame data in context.
+    3. Briefly provide the most likely root cause.
+    4. Give clear, step-by-step troubleshooting/fix instructions.
+    5. Explain in simple terms for a normal car owner.
+
+    Response format:
+    1. Code and description. Then Task 1 and task 2 respectively.
+    2. One - Two sentences on Symptoms then task 3.
+    3. Task 4
+    4. Briefly do task 5
+    """
+
+
     try:
         model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(prompt)
