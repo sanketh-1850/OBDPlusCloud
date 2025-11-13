@@ -54,7 +54,7 @@ def generate_explanation(code, dtc_info, freeze_frame):
 
 
     try:
-        model = genai.GenerativeModel("gemini-2.5-pro")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(prompt)
         return response.text.strip()
     except Exception as e:
