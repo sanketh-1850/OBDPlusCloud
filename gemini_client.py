@@ -29,7 +29,7 @@ def generate_explanation(code, dtc_info, freeze_frame):
     5. Explain in simple terms for a normal car owner.
     """
     prompt = f"""
-    You are a professional automotive diagnostic assistant. Give me a response in a blog style with correct headers, etc. Do not respond as if you are responding in a conversation. Response should be a maximum of 300 words. Response should be in HTML format.
+    You are a professional automotive diagnostic assistant. Give me a response in a blog style with correct headers, etc. Do not respond as if you are responding in a conversation. Response should be a maximum of 300 words. Response should be in HTML format without <div>. Must consist only tags like <h1>, <p>, <h2>, <ol>, <li>, etc.
 
     Fault Code: {code}
     Description: {dtc_info['tcode']}
