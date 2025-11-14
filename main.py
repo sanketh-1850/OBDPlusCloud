@@ -30,7 +30,7 @@ def keep_alive():
             print("PING:", res.status_code, datetime.now())
         except Exception as e:
             print("Ping error:", e)
-        time.sleep(600)  # every 1 minute
+        time.sleep(90)  # every 1 minute
 
 # --------------------------------------------------------
 # 3. Start keep-alive background thread on startup
